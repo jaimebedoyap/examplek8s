@@ -1,0 +1,11 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+.terraform.lock.hcl
+*.tfvars
+
+# Kubernetes & App
+__pycache__/
+*.yaml.bak
+app-test.yaml # Solo si contiene el password real de la DB

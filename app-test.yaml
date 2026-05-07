@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-db-test
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: db-test
+  template:
+    metadata:
+      labels:
+        app: db-test
+    spec:
+      containers:
+      - name: flask-app
+        image: python:3.9-slim
+        command: ["/bin/sh", "-c"]
+        args: 
+          - |
+            pip install flask psycopg2-binary
+            cat <<EOF > app.py
+            from flask import Flask
+            import psycopg2
+            import os
+
+            app = Flask(__name__)
+
+            @app.route("/")
+            def home():
+                try:
+                    # Usamos tu endpoint real
+                    conn = psycopg2.connect(
+                        dbname="devopsdb",
+                        user="jaimeadmin",
+                        password="DB_PASSWORD_PLACEHOLDER!",
+                        host="terraform-2026050621014290730000000d.cgteumicqmni.us-east-1.rds.amazonaws.com"
+                    )
+                    return "<body style='font-family:sans-serif; text-align:center;'><h1>🚀 ¡Hola Jaime! Saludos desde Medellín</h1><p style='color:green; font-size:20px;'>✅ Conexión Exitosa a RDS desde EKS</p></body>"
+                except Exception as e:
+                    return f"<h1 style='color:red;'>❌ Error de Conexión</h1><p>{str(e)}</p>"
+
+            if __name__ == '__main__':
+                app.run(host='0.0.0.0', port=5000)
+            EOF
+            python app.py

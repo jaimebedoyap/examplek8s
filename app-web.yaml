@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-service
+spec:
+  type: LoadBalancer # <--- Esto crea el recurso en AWS
+  selector:
+    app: db-test
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
